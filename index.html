@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Mobile Vikings Stadspel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;600;700&family=League+Gothic&display=swap" rel="stylesheet">
+<style>
+:root{--black:#000;--white:#fff;--card:#18181B;--line:#5A5A64;--muted:#D9D9DE;--label:#75778B;--red:#CD0400;--head:'League Gothic','Bebas Neue',Impact,'Arial Narrow',sans-serif;--body:Asap,system-ui,-apple-system,'Segoe UI',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:#000;color:#fff;font-family:var(--body);font-size:15px}
+button{font-family:inherit;cursor:pointer}
+.app{max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:40px}
+.screen{display:none}.screen.active{display:block}
+.title{font-family:var(--head);text-transform:uppercase;letter-spacing:.5px;line-height:1.05;font-weight:400}
+.logo{font-family:var(--head);font-size:19px;letter-spacing:1.5px;text-transform:uppercase;line-height:1}
+.logo i{color:var(--red);font-style:normal}
+.lbl{font-size:11px;font-weight:600;color:var(--label);letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px}
+.field{width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:#000;color:#fff;font-size:16px;font-family:inherit;outline:none}
+.field:focus{border-color:var(--red)}
+textarea.field{resize:none}
+.btn{display:block;width:100%;border:0;border-radius:10px;padding:14px 0;font-weight:700;font-size:15px;text-align:center;background:var(--red);color:#fff}
+.btn:disabled{background:var(--card);color:var(--label);border:1.5px solid var(--line);cursor:default}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+
+/* register */
+.reg{padding:20px}
+.reg .hero{margin-top:44px}
+.reg .hero .title{font-size:58px}
+.reg .hero p{font-size:14px;color:var(--muted);line-height:1.6;margin-top:14px}
+.reg .card{margin-top:28px;display:flex;flex-direction:column;gap:16px}
+.row{display:flex;gap:8px}
+.row .field{flex:1}
+.add{background:var(--red);color:#fff;border:0;border-radius:10px;padding:0 18px;font-size:20px;font-weight:700}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{background:#000;border:1px solid var(--line);border-radius:20px;padding:4px 6px 4px 12px;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.tag button{background:none;border:0;color:var(--label);font-size:14px;padding:0 4px}
+
+/* bingo */
+.top{padding:18px 16px 14px}
+.bar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.swap{background:none;border:0;color:var(--label);font-size:12px;text-decoration:underline}
+.tcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.tcard .title{font-size:34px}
+.tcard .mem{font-size:12px;color:var(--label);margin:4px 0 12px}
+.stats{display:flex;gap:8px}
+.stat{flex:1;background:#000;border:1px solid var(--line);border-radius:10px;padding:8px 0;text-align:center}
+.stat b{display:block;font-family:var(--head);font-weight:400;font-size:28px;line-height:1}
+.stat.rank{border-color:var(--red)}.stat.rank b{color:var(--red)}
+.stat span{font-size:10px;color:var(--label);display:block;margin-top:3px}
+.bingo{display:none;margin-top:10px;background:var(--red);border-radius:8px;padding:6px 0;text-align:center;font-family:var(--head);font-size:22px;letter-spacing:1px}
+.legend{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 10px}
+.pill{border-radius:20px;padding:2px 9px;font-size:10px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:0 12px 20px}
+.cell{border-radius:8px;padding:7px 4px;min-height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:10px;line-height:1.3;color:inherit;word-break:break-word;hyphens:auto}
+.ci{font-size:13px;margin-bottom:3px}
+.s-pending{background:var(--card);border:1.5px solid var(--line);color:var(--muted)}
+.s-submitted{background:#000;border:1.5px dashed var(--muted);color:#fff}
+.s-approved{background:#fff;border:1.5px solid #fff;color:#000;font-weight:600}
+.s-rejected{background:#000;border:1.5px solid var(--red);color:#fff}
+.s-rejected .ci{color:var(--red)}
+
+/* sheet */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;z-index:50}
+.overlay.open{display:flex}
+.sheet{background:var(--card);border-top:1px solid var(--line);border-radius:20px 20px 0 0;padding:14px 20px calc(24px + env(safe-area-inset-bottom));width:100%;max-width:480px;margin:auto auto 0;max-height:94vh;overflow-y:auto}
+.handle{width:40px;height:4px;background:var(--line);border-radius:2px;margin:0 auto 16px}
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.sh .title{font-size:28px}
+.x{border:1px solid var(--line);background:none;color:var(--muted);border-radius:50%;width:30px;height:30px;font-size:14px}
+.task{background:#000;border-left:3px solid var(--red);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:14px;font-weight:600;line-height:1.5}
+.note{border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:13px;line-height:1.5;background:#000;border:1px solid var(--line);color:var(--muted);display:none}
+.note.bad{border-color:var(--red);color:#fff}
+.note b{display:block;font-size:10px;letter-spacing:.6px;text-transform:uppercase;margin-bottom:3px;color:var(--red)}
+.dz{position:relative;border:2px dashed var(--line);border-radius:12px;padding:28px 16px;text-align:center;background:#000;margin-bottom:14px}
+.dz input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}
+.dz .big{font-size:32px;margin-bottom:6px}
+.dz b{display:block;font-size:14px}
+.dz span{font-size:12px;color:var(--label)}
+.pv{display:none;margin-bottom:14px;text-align:center}
+.pv img,.pv video{width:100%;max-height:260px;object-fit:contain;border-radius:10px;border:1px solid var(--line);background:#000}
+.prog{height:4px;background:var(--line);border-radius:4px;overflow:hidden;margin-bottom:12px;display:none}
+.prog i{display:block;height:100%;width:0;background:var(--red);transition:width .2s}
+.btns{display:flex;gap:8px}
+.btns .btn{flex:1}.btns .btn.big{flex:2}
+
+#toasts{position:fixed;left:0;right:0;bottom:22px;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:99;pointer-events:none;padding:0 16px}
+.toast{background:#fff;color:#000;border-radius:30px;padding:11px 18px;font-weight:700;font-size:13.5px;box-shadow:0 6px 24px rgba(0,0,0,.5);max-width:100%;text-align:center}
+.toast.error{background:var(--red);color:#fff}
+.toast.info{background:var(--card);color:#fff;border:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="app">
+<div id="toasts"></div>
+
+<!-- Registratie -->
+<section id="s-register" class="screen active">
+  <div class="reg">
+    <div class="logo">Mobile<i>·</i>Vikings</div>
+    <div class="hero">
+      <div class="title">Welkom,<br>vikings!</div>
+      <p>Werk samen, voltooi opdrachten in de stad en maak er een onvergetelijke teambuilding van. Registreer jullie team om te starten.</p>
+    </div>
+    <div class="card">
+      <div>
+        <div class="lbl">Teamnaam</div>
+        <input id="tn" class="field" type="text" placeholder="bv. Team Rood" autocomplete="off" maxlength="40">
+      </div>
+      <div>
+        <div class="lbl">Teamleden (optioneel)</div>
+        <div class="row">
+          <input id="mn" class="field" type="text" placeholder="Naam teamlid..." autocomplete="off" maxlength="40">
+          <button class="add" data-act="addm" aria-label="Teamlid toevoegen">+</button>
+        </div>
+        <div id="tags" class="tags"></div>
+      </div>
+      <button id="go" class="btn" data-act="register">Start de bingo →</button>
+    </div>
+  </div>
+</section>
+
+<!-- Bingo -->
+<section id="s-bingo" class="screen">
+  <div class="top">
+    <div class="bar-top">
+      <div class="logo">Mobile<i>·</i>Vikings</div>
+      <button class="swap" data-act="swap">Ander team</button>
+    </div>
+    <div class="tcard">
+      <div id="hname" class="title"></div>
+      <div id="hmem" class="mem"></div>
+      <div class="stats">
+        <div class="stat"><b id="n-ok">0</b><span>Goedgekeurd</span></div>
+        <div class="stat rank"><b id="n-rank">#-</b><span id="n-rank-l">Positie</span></div>
+        <div class="stat"><b id="n-wait">0</b><span>In behandeling</span></div>
+      </div>
+      <div id="bingo" class="bingo">BINGO!</div>
+    </div>
+  </div>
+  <div class="legend">
+    <span class="pill s-pending">Niet gedaan</span>
+    <span class="pill s-submitted">In behandeling</span>
+    <span class="pill s-approved">Goedgekeurd</span>
+    <span class="pill s-rejected">Afgekeurd</span>
+  </div>
+  <div id="grid" class="grid"></div>
+</section>
+
+<!-- Upload sheet -->
+<div id="ov" class="overlay">
+  <div class="sheet">
+    <div class="handle"></div>
+    <div class="sh"><div class="title">Bewijs uploaden</div><button class="x" data-act="close" aria-label="Sluiten">✕</button></div>
+    <div id="task" class="task"></div>
+    <div id="note" class="note"></div>
+    <div id="dz" class="dz">
+      <div class="big">📷</div>
+      <b>Tik hier om een foto of video te kiezen</b>
+      <span>of maak meteen een nieuwe</span>
+      <input id="file" type="file" accept="image/*,video/*">
+    </div>
+    <div id="pv" class="pv"></div>
+    <div style="margin-bottom:14px">
+      <div class="lbl">Opmerking (optioneel)</div>
+      <textarea id="cmt" class="field" rows="2" maxlength="300" placeholder="Voeg een korte toelichting toe..."></textarea>
+    </div>
+    <div id="prog" class="prog"><i></i></div>
+    <div class="btns">
+      <button class="btn ghost" data-act="close">Annuleren</button>
+      <button id="again" class="btn ghost" data-act="again" style="display:none">Andere</button>
+      <button id="send" class="btn big" data-act="send" disabled>Insturen →</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var SB_URL="https://tdriensxlmkwfzzzdjnf.supabase.co";
+var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRkcmllbnN4bG1rd2Z6enpkam5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3OTY0ODMsImV4cCI6MjEwOTM3MjQ4M30.mSb-shIwzaZcGQFyiNPjynU457MyoF9FzDvt2DiMB0U";
+var LS="mv_stadspel_team";
+var MAX_MB=50;
+
+var TASKS=[
+{t:"Vind een JIM mobile simkaart"},
+{t:"Speel een arcade game"},
+{t:"Maak een groepsfoto op een boot"},
+{t:"Maak een video: zing het MV soundlogo in een Telenet of Orange winkel met minstens 3 personen",v:1},
+{t:"Maak een reclamespot voor fiber in Hasselt met minstens 2 onbekenden",v:1},
+{t:"Maak een groepsfoto achter de toog van een café"},
+{t:"Zing een kerstlied in een winkel en laat het personeel meezingen",v:1},
+{t:"Zoek iemand die een BV kent en laat die BV een live foto sturen"},
+{t:"Laat de kabouter wandelen"},
+{t:"Scoor een Hasseltse specialiteit (eten of drank)"},
+{t:"Maak een video als je tripel 20 gooit met darts",v:1},
+{t:"Maak een foto met iemand in een opvallend kerstoutfit"},
+{t:"Zoek een standbeeld en kopieer exact de houding"},
+{t:"Zoek het borrelmanneke"},
+{t:"Gooi om ter verst een papieren vliegtuig tegen een onbekend persoon"},
+{t:"Bevind je op glad ijs"}
+];
+
+var st={team:"",members:[],subs:[],prev:null,rank:"-",total:1,sel:null,file:null,busy:false,timer:null};
+var $=function(id){return document.getElementById(id)};
+var enc=encodeURIComponent;
+
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]})}
+function toast(msg,type){
+  var el=document.createElement("div");el.className="toast "+(type||"success");el.textContent=msg;
+  $("toasts").appendChild(el);setTimeout(function(){el.remove()},4000);
+}
+function show(id){
+  var s=document.querySelectorAll(".screen");
+  for(var i=0;i<s.length;i++)s[i].classList.remove("active");
+  $(id).classList.add("active");window.scrollTo(0,0);
+}
+function slug(s){
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")||"team";
+}
+
+/* ---------- Supabase ---------- */
+function api(path,opt){
+  opt=opt||{};
+  var h={apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"};
+  if(opt.prefer)h.Prefer=opt.prefer;
+  return fetch(SB_URL+"/rest/v1/"+path,{method:opt.method||"GET",headers:h,body:opt.body}).then(function(r){
+    return r.text().then(function(t){
+      if(!r.ok)throw new Error(t||("HTTP "+r.status));
+      return t?JSON.parse(t):null;
+    });
+  });
+}
+function upload(path,blob,type,onProg){
+  return new Promise(function(res,rej){
+    var x=new XMLHttpRequest();
+    x.open("POST",SB_URL+"/storage/v1/object/bewijs/"+path);
+    x.setRequestHeader("apikey",SB_KEY);
+    x.setRequestHeader("Authorization","Bearer "+SB_KEY);
+    x.setRequestHeader("Content-Type",type||"application/octet-stream");
+    x.upload.onprogress=function(e){if(e.lengthComputable&&onProg)onProg(e.loaded/e.total)};
+    x.onload=function(){
+      if(x.status>=200&&x.status<300)res(SB_URL+"/storage/v1/object/public/bewijs/"+path);
+      else rej(new Error(x.responseText||("HTTP "+x.status)));
+    };
+    x.onerror=function(){rej(new Error("Netwerkfout"))};
+    x.send(blob);
+  });
+}
+
+/* ---------- sessie ---------- */
+function saveSess(){try{localStorage.setItem(LS,JSON.stringify({team:st.team,members:st.members}))}catch(e){}}
+function loadSess(){try{var s=localStorage.getItem(LS);return s?JSON.parse(s):null}catch(e){return null}}
+function clearSess(){try{localStorage.removeItem(LS)}catch(e){}}
+
+/* ---------- registratie ---------- */
+function renderTags(){
+  $("tags").innerHTML=st.members.map(function(m,i){
+    return '<span class="tag">'+esc(m)+'<button data-act="rmm" data-i="'+i+'" aria-label="Verwijder">✕</button></span>';
+  }).join("");
+}
+function addMember(){
+  var v=$("mn").value.trim();
+  if(!v||st.members.indexOf(v)>-1)return;
+  st.members.push(v);$("mn").value="";renderTags();
+}
+function register(){
+  var name=$("tn").value.trim();
+  if(!name)return;
+  var btn=$("go");btn.disabled=true;btn.textContent="Even geduld…";
+  api("teams?on_conflict=name",{method:"POST",prefer:"resolution=ignore-duplicates,return=minimal",body:JSON.stringify({name:name,members:st.members})})
+  .then(function(){return api("teams?name=eq."+enc(name)+"&select=name,members")})
+  .then(function(rows){
+    st.team=name;
+    if(rows&&rows[0]&&rows[0].members&&rows[0].members.length)st.members=rows[0].members;
+    saveSess();enter(true);
+  })
+  .catch(function(){toast("Registreren mislukt. Controleer je internet en probeer opnieuw.","error")})
+  .then(function(){btn.disabled=false;btn.textContent="Start de bingo →"});
+}
+function enter(first){
+  show("s-bingo");render();load();
+  if(!st.timer)st.timer=setInterval(load,5000);
+  if(first)toast("Welkom, team "+st.team+"!");
+}
+
+/* ---------- data ---------- */
+function statusOf(i){
+  for(var k=0;k<st.subs.length;k++)if(st.subs[k].task_idx===i)return st.subs[k].status;
+  return "pending";
+}
+function rejectOf(i){
+  for(var k=0;k<st.subs.length;k++)if(st.subs[k].task_idx===i)return st.subs[k].reject_comment||"";
+  return "";
+}
+function hasBingo(){
+  var a=function(i){return statusOf(i)==="approved"};
+  var r,c;
+  for(r=0;r<4;r++){if(a(r*4)&&a(r*4+1)&&a(r*4+2)&&a(r*4+3))return true}
+  for(c=0;c<4;c++){if(a(c)&&a(4+c)&&a(8+c)&&a(12+c))return true}
+  if(a(0)&&a(5)&&a(10)&&a(15))return true;
+  if(a(3)&&a(6)&&a(9)&&a(12))return true;
+  return false;
+}
+function load(){
+  if(!st.team)return;
+  Promise.all([
+    api("submissions?team_name=eq."+enc(st.team)+"&select=task_idx,status,reject_comment"),
+    api("submissions?status=eq.approved&select=team_name"),
+    api("teams?select=name")
+  ]).then(function(r){
+    var mine=r[0]||[];
+    var now={};mine.forEach(function(s){now[s.task_idx]=s.status});
+    if(st.prev){
+      Object.keys(now).forEach(function(k){
+        if(st.prev[k]==="submitted"&&now[k]==="approved")toast("Opdracht goedgekeurd! 🎉");
+        if(st.prev[k]==="submitted"&&now[k]==="rejected")toast("Een opdracht is afgekeurd. Bekijk de feedback.","error");
+      });
+    }
+    st.prev=now;st.subs=mine;
+    var sc={};(r[2]||[]).forEach(function(t){sc[t.name]=0});
+    (r[1]||[]).forEach(function(x){sc[x.team_name]=(sc[x.team_name]||0)+1});
+    var me=sc[st.team]||0,rank=1;
+    Object.keys(sc).forEach(function(k){if(k!==st.team&&sc[k]>me)rank++});
+    st.rank=rank;st.total=Object.keys(sc).length||1;
+    render();
+  }).catch(function(){});
+}
+
+/* ---------- render ---------- */
+function render(){
+  $("hname").textContent=st.team;
+  $("hmem").textContent=st.members.join(" · ");
+  var ok=0,wait=0;
+  TASKS.forEach(function(t,i){var s=statusOf(i);if(s==="approved")ok++;if(s==="submitted")wait++});
+  $("n-ok").textContent=ok;$("n-wait").textContent=wait;
+  $("n-rank").textContent="#"+st.rank;
+  $("n-rank-l").textContent="Positie (van "+st.total+")";
+  $("bingo").style.display=hasBingo()?"block":"none";
+  var icons={approved:"✓",submitted:"⏳",rejected:"✗"};
+  $("grid").innerHTML=TASKS.map(function(t,i){
+    var s=statusOf(i);
+    return '<button class="cell s-'+s+'" data-act="open" data-i="'+i+'"'+(s==="approved"?" disabled":"")+'>'
+      +(icons[s]?'<span class="ci">'+icons[s]+'</span>':"")+'<span>'+esc(t.t)+'</span></button>';
+  }).join("");
+}
+
+/* ---------- upload sheet ---------- */
+function clearFile(){
+  if(st.file&&st.file.url)URL.revokeObjectURL(st.file.url);
+  st.file=null;$("file").value="";
+  $("pv").style.display="none";$("pv").innerHTML="";
+  $("dz").style.display="block";$("again").style.display="none";
+  $("send").disabled=true;
+}
+function openSheet(i){
+  st.sel=i;clearFile();
+  $("task").textContent=TASKS[i].t;
+  $("cmt").value="";$("prog").style.display="none";
+  var n=$("note"),s=statusOf(i),rc=rejectOf(i),h="";
+  if(s==="rejected"){h='<b>Feedback moderator</b>'+(rc?esc(rc):"Deze opdracht werd afgekeurd. Probeer opnieuw.");n.className="note bad"}
+  else if(s==="submitted"){h="Je bewijs wacht op goedkeuring. Een nieuw bewijs vervangt het vorige.";n.className="note"}
+  else if(TASKS[i].v){h="Tip: film dit als korte video (max. 30 seconden).";n.className="note"}
+  n.innerHTML=h;n.style.display=h?"block":"none";
+  $("ov").classList.add("open");
+}
+function closeSheet(){if(st.busy)return;$("ov").classList.remove("open");clearFile()}
+function onFile(e){
+  var f=e.target.files&&e.target.files[0];if(!f)return;
+  var isV=/^video\//.test(f.type);
+  if(!isV&&!/^image\//.test(f.type)){toast("Kies een foto of video.","error");e.target.value="";return}
+  if(f.size>MAX_MB*1024*1024){toast("Bestand te groot (max "+MAX_MB+" MB). Film korter of in lagere kwaliteit.","error");e.target.value="";return}
+  if(st.file&&st.file.url)URL.revokeObjectURL(st.file.url);
+  var url=URL.createObjectURL(f);
+  st.file={file:f,isV:isV,url:url};
+  $("pv").innerHTML=isV?'<video src="'+url+'" controls playsinline muted></video>':'<img src="'+url+'" alt="voorbeeld">';
+  $("pv").style.display="block";$("dz").style.display="none";
+  $("again").style.display="block";$("send").disabled=false;
+}
+function compress(file){
+  return new Promise(function(res){
+    var u=URL.createObjectURL(file),img=new Image();
+    img.onload=function(){
+      try{
+        var s=Math.min(1,1280/Math.max(img.width,img.height)),c=document.createElement("canvas");
+        c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);
+        c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+        c.toBlob(function(b){URL.revokeObjectURL(u);res(b?{blob:b,type:"image/jpeg",ext:"jpg"}:{blob:file,type:file.type,ext:"jpg"})},"image/jpeg",0.78);
+      }catch(e){URL.revokeObjectURL(u);res({blob:file,type:file.type,ext:"jpg"})}
+    };
+    img.onerror=function(){URL.revokeObjectURL(u);res({blob:file,type:file.type,ext:"jpg"})};
+    img.src=u;
+  });
+}
+function setSend(txt,dis){$("send").textContent=txt;$("send").disabled=dis}
+function send(){
+  if(!st.file||st.sel===null||st.busy)return;
+  st.busy=true;setSend("Uploaden… 0%",true);$("prog").style.display="block";$("prog").firstChild.style.width="0";
+  var idx=st.sel,isV=st.file.isV,f=st.file.file;
+  var prep=isV?Promise.resolve({blob:f,type:f.type||"video/mp4",ext:((f.name.split(".").pop()||"mp4").toLowerCase().replace(/[^a-z0-9]/g,"")||"mp4")}):compress(f);
+  prep.then(function(p){
+    var path=slug(st.team)+"/"+idx+"-"+Date.now()+"."+p.ext;
+    return upload(path,p.blob,p.type,function(x){
+      var pc=Math.round(x*100);setSend("Uploaden… "+pc+"%",true);$("prog").firstChild.style.width=pc+"%";
+    });
+  }).then(function(url){
+    return api("submissions?on_conflict=team_name,task_idx",{method:"POST",prefer:"resolution=merge-duplicates,return=minimal",body:JSON.stringify({
+      team_name:st.team,task_idx:idx,status:"submitted",media_url:url,media_type:isV?"video":"image",team_comment:$("cmt").value.trim(),reject_comment:null
+    })});
+  }).then(function(){
+    st.busy=false;$("ov").classList.remove("open");clearFile();setSend("Insturen →",true);
+    toast("Ingestuurd! Wacht op goedkeuring.","info");load();
+  }).catch(function(err){
+    st.busy=false;setSend("Insturen →",false);
+    var m=String(err&&err.message||err);
+    toast(/exceeded|too large|413/i.test(m)?"Bestand te groot voor opslag.":"Insturen mislukt. Probeer opnieuw.","error");
+  });
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click",function(e){
+  var el=e.target.closest("[data-act]");if(!el)return;
+  var a=el.getAttribute("data-act");
+  if(a==="addm")addMember();
+  else if(a==="rmm"){st.members.splice(+el.getAttribute("data-i"),1);renderTags()}
+  else if(a==="register")register();
+  else if(a==="open")openSheet(+el.getAttribute("data-i"));
+  else if(a==="close")closeSheet();
+  else if(a==="again")clearFile();
+  else if(a==="send")send();
+  else if(a==="swap"){
+    if(confirm("Van team wisselen? Je komt terug op het startscherm.")){
+      clearSess();clearInterval(st.timer);st.timer=null;st.team="";st.members=[];st.prev=null;st.subs=[];
+      $("tn").value="";renderTags();show("s-register");
+    }
+  }
+});
+$("ov").addEventListener("click",function(e){if(e.target===this)closeSheet()});
+$("file").addEventListener("change",onFile);
+$("mn").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();addMember()}});
+$("tn").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();register()}});
+
+var s=loadSess();
+if(s&&s.team){st.team=s.team;st.members=s.members||[];enter(false)}
+})();
+</script>
+</body>
+</html>
