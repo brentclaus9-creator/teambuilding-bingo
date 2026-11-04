@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex">
+<title>MV Stadspel — Moderator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;600;700&family=League+Gothic&display=swap" rel="stylesheet">
+<style>
+:root{--black:#000;--white:#fff;--card:#18181B;--line:#5A5A64;--muted:#D9D9DE;--label:#75778B;--red:#CD0400;--head:'League Gothic','Bebas Neue',Impact,'Arial Narrow',sans-serif;--body:Asap,system-ui,-apple-system,'Segoe UI',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:#000;color:#fff;font-family:var(--body);font-size:15px}
+button{font-family:inherit;cursor:pointer}
+.app{max-width:720px;margin:0 auto;min-height:100vh;padding-bottom:40px}
+.screen{display:none}.screen.active{display:block}
+.title{font-family:var(--head);text-transform:uppercase;letter-spacing:.5px;line-height:1.05;font-weight:400}
+.logo{font-family:var(--head);font-size:19px;letter-spacing:1.5px;text-transform:uppercase;line-height:1}
+.logo i{color:var(--red);font-style:normal}
+.lbl{font-size:11px;font-weight:600;color:var(--label);letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px}
+.field{width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:#000;color:#fff;font-size:16px;font-family:inherit;outline:none}
+.field:focus{border-color:var(--red)}
+textarea.field{resize:none}
+.btn{display:block;width:100%;border:0;border-radius:10px;padding:14px 0;font-weight:700;font-size:15px;text-align:center;background:var(--red);color:#fff}
+.btn:disabled{background:var(--card);color:var(--label);border:1.5px solid var(--line)}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--muted)}
+.btn.rej{background:#000;border:1.5px solid var(--red);color:#fff}
+.btn.ok{background:#fff;color:#000}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+
+/* login */
+.login{min-height:100vh;padding:20px;display:flex;flex-direction:column}
+.login .mid{flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px}
+.login .title{font-size:54px}
+.login .sub{font-size:13px;color:var(--muted);margin-top:10px}
+.login .red{color:var(--red);margin-bottom:6px}
+.chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.chk input{width:18px;height:18px;accent-color:#CD0400}
+.err{color:#fff;background:var(--red);border-radius:8px;padding:7px 10px;font-size:13px;display:none}
+
+/* header + tabs */
+.hd{padding:18px 16px 14px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.hd .sum{font-size:12px;color:var(--label);margin-top:8px}
+.hd .acts{display:flex;gap:6px}
+.chip{border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--muted);background:none}
+.tabs{display:flex;border-bottom:1px solid var(--line);padding:0 10px;overflow-x:auto}
+.tab{background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;padding:11px 12px;font-size:13px;font-weight:600;color:var(--label);white-space:nowrap}
+.tab.on{color:#fff;border-bottom-color:var(--red)}
+.pane{display:none;padding:16px}.pane.on{display:block}
+.empty{color:var(--label);font-size:14px;padding:24px 0;text-align:center}
+
+/* leaderboard */
+.lb{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:14px;margin-bottom:8px}
+.lb.first{border:2px solid var(--red)}
+.rk{font-family:var(--head);font-size:40px;width:32px;text-align:center;color:var(--label);line-height:1}
+.lb.first .rk{color:var(--red)}
+.lbi{flex:1;min-width:0}
+.lbi .title{font-size:24px}
+.mem{font-size:11px;color:var(--label);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar{background:var(--line);border-radius:4px;height:4px;margin-top:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--red)}
+.pend{font-size:11px;color:var(--muted);margin-top:5px}
+.sc{text-align:right}
+.sc b{display:block;font-family:var(--head);font-weight:400;font-size:36px;line-height:1}
+.sc span{font-size:10px;color:var(--label)}
+.bg{background:var(--red);border-radius:6px;font-family:var(--head);font-size:14px;letter-spacing:1px;padding:1px 7px;margin-left:6px;vertical-align:middle}
+
+/* queue */
+.q{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--red);border-radius:10px;padding:12px;display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.th{width:58px;height:58px;border-radius:8px;object-fit:cover;flex-shrink:0;background:#000;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:22px}
+.qi{flex:1;min-width:0}
+.qi b{font-size:14px}
+.qi .tk{font-size:12px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qi .cm{font-size:11px;color:var(--label);font-style:italic;margin-top:3px}
+.q .btn{width:auto;padding:9px 16px;font-size:13px}
+
+/* teams */
+.tc{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:12px}
+.tch{padding:12px 14px 8px;display:flex;justify-content:space-between;align-items:flex-start}
+.tch .title{font-size:26px}
+.score{font-family:var(--head);font-size:22px;background:var(--red);border-radius:20px;padding:2px 12px;line-height:1.3}
+.tc .bar{margin:0 14px 10px}
+.g{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:0 12px 12px}
+.c{border-radius:6px;padding:6px 4px;min-height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:9.5px;line-height:1.3;color:inherit;word-break:break-word;hyphens:auto}
+.c .ci{font-size:11px;margin-bottom:2px}
+.c.has{cursor:pointer}
+.s-pending{background:#000;border:1.5px solid var(--line);color:var(--muted)}
+.s-submitted{background:#000;border:1.5px dashed var(--muted);color:#fff}
+.s-approved{background:#fff;border:1.5px solid #fff;color:#000;font-weight:600}
+.s-rejected{background:#000;border:1.5px solid var(--red);color:#fff}
+.s-rejected .ci{color:var(--red)}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;z-index:50;padding:14px;overflow-y:auto}
+.overlay.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;width:100%;max-width:460px;margin:auto}
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.sh .title{font-size:28px}
+.x{border:1px solid var(--line);background:none;color:var(--muted);border-radius:50%;width:30px;height:30px;font-size:14px}
+.ib{background:#000;border:1px solid var(--line);border-radius:10px;padding:9px 13px;margin-bottom:9px}
+.ib .lbl{margin-bottom:2px;font-size:10px}
+.ib div:last-child{font-size:14px;font-weight:600;line-height:1.45}
+.ib small{display:block;font-size:11px;color:var(--label);font-weight:400;margin-top:2px}
+.media{margin:12px 0 14px}
+.media img,.media video{width:100%;max-height:360px;object-fit:contain;border-radius:10px;border:1px solid var(--line);background:#000;display:block}
+.nomedia{padding:26px 0;text-align:center;color:var(--label);font-size:13px;border:1px solid var(--line);border-radius:10px}
+.btns{display:flex;gap:10px}.btns .btn{flex:1}
+.rjbox{display:none;margin-bottom:12px}
+.stl{display:inline-block;font-size:11px;border-radius:20px;padding:2px 10px;margin-bottom:10px}
+
+#toasts{position:fixed;left:0;right:0;bottom:22px;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:99;pointer-events:none;padding:0 16px}
+.toast{background:#fff;color:#000;border-radius:30px;padding:11px 18px;font-weight:700;font-size:13.5px;box-shadow:0 6px 24px rgba(0,0,0,.5)}
+.toast.error{background:var(--red);color:#fff}
+.toast.info{background:var(--card);color:#fff;border:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="app">
+<div id="toasts"></div>
+
+<!-- Login -->
+<section id="s-login" class="screen active">
+  <div class="login">
+    <div class="logo">Mobile<i>·</i>Vikings</div>
+    <div class="mid">
+      <div>
+        <div class="lbl red">Moderator</div>
+        <div class="title">Dashboard</div>
+        <div class="sub">Voer de toegangscode in om teams te beoordelen.</div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+        <input id="code" class="field" type="password" inputmode="numeric" placeholder="Toegangscode" autocomplete="off">
+        <label class="chk"><input id="rem" type="checkbox" checked> Onthoud mij op dit apparaat</label>
+        <div id="err" class="err">Onjuiste code</div>
+        <button class="btn" data-act="login">Inloggen →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Dashboard -->
+<section id="s-dash" class="screen">
+  <div class="hd">
+    <div>
+      <div class="logo">Mobile<i>·</i>Vikings</div>
+      <div id="sum" class="sum">Laden…</div>
+    </div>
+    <div class="acts">
+      <button class="chip" data-act="refresh">↻ Refresh</button>
+      <button class="chip" data-act="logout">Uit</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab on" data-act="tab" data-t="lb">Leaderboard</button>
+    <button class="tab" data-act="tab" data-t="q" id="tq">Beoordelen</button>
+    <button class="tab" data-act="tab" data-t="tm">Teams</button>
+  </div>
+  <div id="p-lb" class="pane on"></div>
+  <div id="p-q" class="pane"></div>
+  <div id="p-tm" class="pane"></div>
+</section>
+
+<!-- Review modal -->
+<div id="ov" class="overlay"><div id="mdl" class="modal"></div></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var SB_URL="https://tdriensxlmkwfzzzdjnf.supabase.co";
+var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRkcmllbnN4bG1rd2Z6enpkam5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3OTY0ODMsImV4cCI6MjEwOTM3MjQ4M30.mSb-shIwzaZcGQFyiNPjynU457MyoF9FzDvt2DiMB0U";
+var MOD_CODE="1234";
+var LS="mv_stadspel_mod";
+
+var TASKS=[
+"Vind een JIM mobile simkaart",
+"Speel een arcade game",
+"Maak een groepsfoto op een boot",
+"Maak een video: zing het MV soundlogo in een Telenet of Orange winkel met minstens 3 personen",
+"Maak een reclamespot voor fiber in Hasselt met minstens 2 onbekenden",
+"Maak een groepsfoto achter de toog van een café",
+"Zing een kerstlied in een winkel en laat het personeel meezingen",
+"Zoek iemand die een BV kent en laat die BV een live foto sturen",
+"Laat de kabouter wandelen",
+"Scoor een Hasseltse specialiteit (eten of drank)",
+"Maak een video als je tripel 20 gooit met darts",
+"Maak een foto met iemand in een opvallend kerstoutfit",
+"Zoek een standbeeld en kopieer exact de houding",
+"Zoek het borrelmanneke",
+"Gooi om ter verst een papieren vliegtuig tegen een onbekend persoon",
+"Bevind je op glad ijs"
+];
+
+var teams=[],subs=[],map={},rv=null,timer=null;
+var $=function(id){return document.getElementById(id)};
+var enc=encodeURIComponent;
+var ICON={approved:"✓",submitted:"⏳",rejected:"✗"};
+var LABEL={pending:"Niet gedaan",submitted:"Wacht op beoordeling",approved:"Goedgekeurd",rejected:"Afgekeurd"};
+
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]})}
+function toast(msg,type){
+  var el=document.createElement("div");el.className="toast "+(type||"success");el.textContent=msg;
+  $("toasts").appendChild(el);setTimeout(function(){el.remove()},3500);
+}
+function show(id){
+  var s=document.querySelectorAll(".screen");
+  for(var i=0;i<s.length;i++)s[i].classList.remove("active");
+  $(id).classList.add("active");window.scrollTo(0,0);
+}
+function api(path,opt){
+  opt=opt||{};
+  var h={apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json"};
+  if(opt.prefer)h.Prefer=opt.prefer;
+  return fetch(SB_URL+"/rest/v1/"+path,{method:opt.method||"GET",headers:h,body:opt.body}).then(function(r){
+    return r.text().then(function(t){
+      if(!r.ok)throw new Error(t||("HTTP "+r.status));
+      return t?JSON.parse(t):null;
+    });
+  });
+}
+
+/* ---------- login ---------- */
+function login(){
+  if($("code").value===MOD_CODE){
+    $("err").style.display="none";
+    try{if($("rem").checked)localStorage.setItem(LS,"1")}catch(e){}
+    start();
+  }else{$("err").style.display="block"}
+}
+function start(){
+  show("s-dash");load();
+  if(!timer)timer=setInterval(load,8000);
+}
+function logout(){
+  try{localStorage.removeItem(LS)}catch(e){}
+  clearInterval(timer);timer=null;$("code").value="";show("s-login");
+}
+
+/* ---------- data ---------- */
+function stat(team,i){var s=map[team+"||"+i];return s?s.status:"pending"}
+function approved(team){var n=0;for(var i=0;i<TASKS.length;i++)if(stat(team,i)==="approved")n++;return n}
+function waiting(team){var n=0;for(var i=0;i<TASKS.length;i++)if(stat(team,i)==="submitted")n++;return n}
+function hasBingo(team){
+  var a=function(i){return stat(team,i)==="approved"};
+  var r,c;
+  for(r=0;r<4;r++){if(a(r*4)&&a(r*4+1)&&a(r*4+2)&&a(r*4+3))return true}
+  for(c=0;c<4;c++){if(a(c)&&a(4+c)&&a(8+c)&&a(12+c))return true}
+  if(a(0)&&a(5)&&a(10)&&a(15))return true;
+  if(a(3)&&a(6)&&a(9)&&a(12))return true;
+  return false;
+}
+function load(){
+  Promise.all([
+    api("teams?select=name,members&order=created_at.asc"),
+    api("submissions?select=team_name,task_idx,status,media_url,media_type,team_comment,reject_comment,created_at&order=created_at.asc")
+  ]).then(function(r){
+    teams=r[0]||[];subs=r[1]||[];map={};
+    subs.forEach(function(s){map[s.team_name+"||"+s.task_idx]=s});
+    render();
+  }).catch(function(){toast("Laden mislukt. Controleer je internet.","error")});
+}
+
+/* ---------- render ---------- */
+function render(){
+  var q=subs.filter(function(s){return s.status==="submitted"});
+  var ok=subs.filter(function(s){return s.status==="approved"}).length;
+  $("sum").textContent=teams.length+" teams · "+ok+" goedgekeurd · "+q.length+" wachtend";
+  $("tq").textContent=q.length?"Beoordelen ("+q.length+")":"Beoordelen";
+  renderLb();renderQ(q);renderTeams();
+}
+function renderLb(){
+  if(!teams.length){$("p-lb").innerHTML='<div class="empty">Nog geen teams ingeschreven.</div>';return}
+  var rows=teams.map(function(t){return {t:t,a:approved(t.name),w:waiting(t.name)}});
+  rows.sort(function(x,y){return y.a-x.a||y.w-x.w||x.t.name.localeCompare(y.t.name)});
+  var rank=0,last=-1;
+  $("p-lb").innerHTML=rows.map(function(r,i){
+    if(r.a!==last){rank=i+1;last=r.a}
+    return '<div class="lb'+(rank===1&&r.a>0?" first":"")+'"><div class="rk">'+rank+'</div><div class="lbi">'
+      +'<div class="title">'+esc(r.t.name)+(hasBingo(r.t.name)?'<span class="bg">BINGO</span>':"")+'</div>'
+      +(r.t.members&&r.t.members.length?'<div class="mem">'+esc(r.t.members.join(" · "))+'</div>':"")
+      +'<div class="bar"><i style="width:'+Math.round(r.a/16*100)+'%"></i></div>'
+      +(r.w?'<div class="pend">⏳ '+r.w+' wacht op beoordeling</div>':"")
+      +'</div><div class="sc"><b>'+r.a+'</b><span>/ 16</span></div></div>';
+  }).join("");
+}
+function thumb(s){
+  if(s.media_url&&s.media_type!=="video")return '<img class="th" src="'+esc(s.media_url)+'" alt="" loading="lazy">';
+  return '<div class="th">'+(s.media_url?"🎥":"📷")+'</div>';
+}
+function renderQ(q){
+  if(!q.length){$("p-q").innerHTML='<div class="empty">Niets te beoordelen. 👌</div>';return}
+  $("p-q").innerHTML=q.map(function(s){
+    return '<div class="q">'+thumb(s)+'<div class="qi"><b>'+esc(s.team_name)+'</b><div class="tk">'+esc(TASKS[s.task_idx])+'</div>'
+      +(s.team_comment?'<div class="cm">“'+esc(s.team_comment)+'”</div>':"")
+      +'</div><button class="btn" data-act="review" data-team="'+esc(s.team_name)+'" data-i="'+s.task_idx+'">Bekijk</button></div>';
+  }).join("");
+}
+function renderTeams(){
+  if(!teams.length){$("p-tm").innerHTML='<div class="empty">Nog geen teams ingeschreven.</div>';return}
+  $("p-tm").innerHTML=teams.map(function(t){
+    var a=approved(t.name);
+    var cells=TASKS.map(function(task,i){
+      var s=stat(t.name,i),has=s!=="pending";
+      return '<button class="c s-'+s+(has?" has":"")+'"'+(has?' data-act="review" data-team="'+esc(t.name)+'" data-i="'+i+'"':" disabled")+'>'
+        +(ICON[s]?'<span class="ci">'+ICON[s]+'</span>':"")+'<span>'+esc(task)+'</span></button>';
+    }).join("");
+    return '<div class="tc"><div class="tch"><div><div class="title">'+esc(t.name)+(hasBingo(t.name)?'<span class="bg">BINGO</span>':"")+'</div>'
+      +(t.members&&t.members.length?'<div class="mem">'+esc(t.members.join(" · "))+'</div>':"")
+      +'</div><div class="score">'+a+'/16</div></div><div class="bar"><i style="width:'+Math.round(a/16*100)+'%"></i></div><div class="g">'+cells+'</div></div>';
+  }).join("");
+}
+
+/* ---------- review ---------- */
+function openReview(team,i){
+  var s=map[team+"||"+i];if(!s)return;
+  var t=null;for(var k=0;k<teams.length;k++)if(teams[k].name===team)t=teams[k];
+  rv={team:team,i:i};
+  var media=s.media_url
+    ?(s.media_type==="video"
+      ?'<video src="'+esc(s.media_url)+'" controls playsinline preload="metadata"></video>'
+      :'<a href="'+esc(s.media_url)+'" target="_blank" rel="noopener"><img src="'+esc(s.media_url)+'" alt="bewijs"></a>')
+    :'<div class="nomedia">Geen bestand</div>';
+  var prev=s.status==="rejected"&&s.reject_comment?'<div class="ib"><div class="lbl">Eerdere reden afkeuring</div><div>'+esc(s.reject_comment)+'</div></div>':"";
+  $("mdl").innerHTML=
+    '<div class="sh"><div class="title">Beoordeling</div><button class="x" data-act="close" aria-label="Sluiten">✕</button></div>'
+    +'<span class="stl s-'+s.status+'">'+LABEL[s.status]+'</span>'
+    +'<div class="ib"><div class="lbl">Team</div><div>'+esc(team)+(t&&t.members&&t.members.length?'<small>'+esc(t.members.join(" · "))+'</small>':"")+'</div></div>'
+    +'<div class="ib"><div class="lbl">Opdracht</div><div>'+esc(TASKS[i])+'</div></div>'
+    +(s.team_comment?'<div class="ib"><div class="lbl">Opmerking team</div><div>'+esc(s.team_comment)+'</div></div>':"")
+    +prev
+    +'<div class="media">'+media+'</div>'
+    +'<div id="rj" class="rjbox"><div class="lbl">Reden voor afkeuring (zichtbaar voor het team)</div>'
+    +'<textarea id="rjt" class="field" rows="2" maxlength="300" placeholder="bv. Foto is niet duidelijk genoeg…">'+esc(s.reject_comment||"")+'</textarea></div>'
+    +'<div id="b1" class="btns"><button class="btn rej" data-act="rejask">✗ Afkeuren</button><button class="btn ok" data-act="approve">✓ Goedkeuren</button></div>'
+    +'<div id="b2" class="btns" style="display:none"><button class="btn ghost" data-act="rejcancel">Terug</button><button class="btn" data-act="rejgo">Bevestig afkeuring</button></div>';
+  $("ov").classList.add("open");
+}
+function closeReview(){
+  var v=$("mdl").querySelector("video");if(v)v.pause();
+  $("ov").classList.remove("open");$("mdl").innerHTML="";rv=null;
+}
+function moderate(status){
+  if(!rv)return;
+  var team=rv.team,i=rv.i;
+  var rc=status==="rejected"?($("rjt").value.trim()||null):null;
+  api("submissions?team_name=eq."+enc(team)+"&task_idx=eq."+i,{method:"PATCH",prefer:"return=minimal",body:JSON.stringify({status:status,reject_comment:rc})})
+  .then(function(){
+    var s=map[team+"||"+i];if(s){s.status=status;s.reject_comment=rc}
+    closeReview();render();
+    toast(status==="approved"?"Goedgekeurd voor "+team+" ✓":"Afgekeurd voor "+team,status==="approved"?"success":"error");
+  }).catch(function(){toast("Opslaan mislukt. Probeer opnieuw.","error")});
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click",function(e){
+  var el=e.target.closest("[data-act]");if(!el)return;
+  var a=el.getAttribute("data-act");
+  if(a==="login")login();
+  else if(a==="logout")logout();
+  else if(a==="refresh"){load();toast("Vernieuwd","info")}
+  else if(a==="tab"){
+    var t=el.getAttribute("data-t"),tabs=document.querySelectorAll(".tab"),panes=document.querySelectorAll(".pane");
+    for(var i=0;i<tabs.length;i++)tabs[i].classList.remove("on");
+    for(var j=0;j<panes.length;j++)panes[j].classList.remove("on");
+    el.classList.add("on");$("p-"+t).classList.add("on");
+  }
+  else if(a==="review")openReview(el.getAttribute("data-team"),+el.getAttribute("data-i"));
+  else if(a==="close")closeReview();
+  else if(a==="approve")moderate("approved");
+  else if(a==="rejask"){$("rj").style.display="block";$("b1").style.display="none";$("b2").style.display="flex";$("rjt").focus()}
+  else if(a==="rejcancel"){$("rj").style.display="none";$("b1").style.display="flex";$("b2").style.display="none"}
+  else if(a==="rejgo")moderate("rejected");
+});
+$("ov").addEventListener("click",function(e){if(e.target===this)closeReview()});
+$("code").addEventListener("keydown",function(e){if(e.key==="Enter")login()});
+
+try{if(localStorage.getItem(LS)==="1")start()}catch(e){}
+})();
+</script>
+</body>
+</html>
