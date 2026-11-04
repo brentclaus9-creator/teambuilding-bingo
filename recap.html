@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex">
+<title>MV Stadspel — Recap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;600;700&family=League+Gothic&display=swap" rel="stylesheet">
+<style>
+:root{--black:#000;--white:#fff;--card:#18181B;--line:#5A5A64;--muted:#D9D9DE;--label:#75778B;--red:#CD0400;--head:'League Gothic','Bebas Neue',Impact,'Arial Narrow',sans-serif;--body:Asap,system-ui,-apple-system,'Segoe UI',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:#000;color:#fff;font-family:var(--body);font-size:15px}
+button{font-family:inherit;cursor:pointer}
+.app{max-width:520px;margin:0 auto;min-height:100vh;padding:20px}
+.screen{display:none}.screen.active{display:block}
+.title{font-family:var(--head);text-transform:uppercase;letter-spacing:.5px;line-height:1.05;font-weight:400}
+.logo{font-family:var(--head);font-size:19px;letter-spacing:1.5px;text-transform:uppercase;line-height:1}
+.logo i{color:var(--red);font-style:normal}
+.lbl{font-size:11px;font-weight:600;color:var(--label);letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px}
+.field{width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:#000;color:#fff;font-size:16px;font-family:inherit;outline:none}
+.field:focus{border-color:var(--red)}
+.btn{display:block;width:100%;border:0;border-radius:10px;padding:15px 0;font-weight:700;font-size:16px;text-align:center;background:var(--red);color:#fff;text-decoration:none}
+.btn:disabled{background:var(--card);color:var(--label);border:1.5px solid var(--line);cursor:default}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.err{color:#fff;background:var(--red);border-radius:8px;padding:7px 10px;font-size:13px;display:none;margin-bottom:10px}
+.chk{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
+.chk input{width:18px;height:18px;accent-color:#CD0400}
+.red{color:var(--red)}
+
+.hero{margin:38px 0 24px}
+.hero .title{font-size:58px}
+.hero p{font-size:14px;color:var(--muted);line-height:1.6;margin-top:12px}
+.stats{display:flex;gap:8px;margin-bottom:16px}
+.st{flex:1;background:#000;border:1px solid var(--line);border-radius:10px;padding:10px 0;text-align:center}
+.st b{display:block;font-family:var(--head);font-weight:400;font-size:30px;line-height:1}
+.st span{font-size:10px;color:var(--label)}
+.opts{display:flex;flex-direction:column;gap:14px;margin-bottom:18px}
+.est{font-size:13px;color:var(--muted);text-align:center;margin-bottom:12px}
+.tip{font-size:12px;color:var(--label);line-height:1.6;margin-top:16px}
+.back{display:block;text-align:center;color:var(--label);font-size:13px;margin-top:16px}
+
+/* player */
+#pl{position:fixed;inset:0;background:#000;z-index:100;display:none;overflow:hidden;cursor:none}
+#pl.on{display:block}
+#pl.ctl{cursor:default}
+#stage{position:absolute;inset:0}
+#pg{position:absolute;top:0;left:0;height:4px;background:var(--red);width:0;z-index:6;transition:width .1s linear}
+#cb{position:absolute;top:0;right:0;display:flex;gap:8px;padding:16px;opacity:0;transition:opacity .3s;z-index:7}
+#pl.ctl #cb{opacity:1}
+.cbn{background:rgba(24,24,27,.85);border:1px solid var(--line);color:#fff;border-radius:50%;width:44px;height:44px;font-size:18px}
+.scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;animation:fi .6s ease both}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.bgimg{position:absolute;top:-5%;left:-5%;width:110%;height:110%;object-fit:cover;filter:blur(36px) brightness(.4)}
+.main{position:relative;width:100%;height:100%;object-fit:contain;background:transparent}
+.kb{animation:kb var(--d) ease-out both}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.07)}}
+.l3{position:absolute;left:0;right:0;bottom:0;padding:100px 5vw 4vh;background:linear-gradient(transparent,rgba(0,0,0,.88))}
+.l3 .tm{font-family:var(--head);text-transform:uppercase;font-size:clamp(34px,6vw,84px);line-height:1;border-left:6px solid var(--red);padding-left:16px}
+.l3 .tk{font-size:clamp(13px,1.8vw,22px);color:var(--muted);margin-top:8px;padding-left:22px}
+.cs{flex-direction:column;text-align:center;padding:5vw;gap:2.5vh}
+.big{font-family:var(--head);text-transform:uppercase;line-height:1;font-size:clamp(48px,10vw,150px)}
+.kick{font-size:clamp(12px,1.6vw,22px);font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--red)}
+.sub{font-size:clamp(14px,2vw,28px);color:var(--muted)}
+.pop{animation:pop .7s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.cf{position:absolute;top:-20px;width:10px;height:16px;animation:fall linear forwards;z-index:3}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+#endbox{position:absolute;inset:0;display:none;align-items:flex-end;justify-content:center;padding:6vh 20px;z-index:8;background:linear-gradient(transparent 55%,rgba(0,0,0,.85))}
+#endbox.on{display:flex}
+#endbox .in{display:flex;flex-direction:column;gap:10px;width:100%;max-width:360px;text-align:center}
+#endmsg{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<section id="s-login" class="screen active">
+  <div class="app" style="display:flex;flex-direction:column;min-height:100vh">
+    <div class="logo">Mobile<i>·</i>Vikings</div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px">
+      <div>
+        <div class="lbl red">Moderator</div>
+        <div class="title" style="font-size:54px">Recap</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:10px">Voer de toegangscode in om de film te starten.</div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+        <input id="code" class="field" type="password" inputmode="numeric" placeholder="Toegangscode" autocomplete="off">
+        <div id="err" class="err" style="margin:0">Onjuiste code</div>
+        <button class="btn" data-act="login">Inloggen →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Setup -->
+<section id="s-setup" class="screen">
+  <div class="app">
+    <div class="logo">Mobile<i>·</i>Vikings</div>
+    <div class="hero">
+      <div class="lbl red">Moderator</div>
+      <div class="title">Recap-film</div>
+      <p>De film wordt live opgebouwd uit alle goedgekeurde foto's en video's, opdracht per opdracht, met een podium op het einde.</p>
+    </div>
+    <div id="loaderr" class="err">Laden mislukt. Controleer je internet en vernieuw de pagina.</div>
+    <div class="stats">
+      <div class="st"><b id="n-t">–</b><span>Teams</span></div>
+      <div class="st"><b id="n-p">–</b><span>Foto's</span></div>
+      <div class="st"><b id="n-v">–</b><span>Video's</span></div>
+      <div class="st"><b id="n-h">–</b><span>Uitgesloten</span></div>
+    </div>
+    <div class="card opts">
+      <div>
+        <div class="lbl">Duur per foto</div>
+        <select id="o-photo" class="field"><option value="3">3 seconden</option><option value="4" selected>4 seconden</option><option value="6">6 seconden</option></select>
+      </div>
+      <div>
+        <div class="lbl">Maximale duur per video</div>
+        <select id="o-video" class="field"><option value="8">8 seconden</option><option value="12" selected>12 seconden</option><option value="20">20 seconden</option><option value="30">30 seconden</option></select>
+      </div>
+      <label class="chk"><input id="o-sound" type="checkbox" checked> Geluid van video's aan</label>
+      <label class="chk"><input id="o-podium" type="checkbox" checked> Podium onthullen op het einde</label>
+    </div>
+    <div id="est" class="est"></div>
+    <button id="start" class="btn" data-act="start" disabled>🎬 Start film</button>
+    <div class="tip">Test de film vooraf op het toestel waarmee je gaat presenteren. Gebruik je Spotify als achtergrondmuziek, zet dan het geluid van video's uit. Bediening tijdens de film: spatie is pauze, pijltjes zijn vorige en volgende, F is volledig scherm, Esc stopt.</div>
+    <a class="back" href="moderator.html">← Terug naar dashboard</a>
+  </div>
+</section>
+
+<!-- Player -->
+<div id="pl">
+  <div id="pg"></div>
+  <div id="cb">
+    <button class="cbn" data-act="prev" aria-label="Vorige">⏮</button>
+    <button class="cbn" data-act="pause" id="pb" aria-label="Pauze">⏸</button>
+    <button class="cbn" data-act="next" aria-label="Volgende">⏭</button>
+    <button class="cbn" data-act="fs" aria-label="Volledig scherm">⛶</button>
+    <button class="cbn" data-act="stop" aria-label="Stop">✕</button>
+  </div>
+  <div id="stage"></div>
+  <div id="endbox"><div class="in">
+    <div id="endmsg"></div>
+    <button class="btn" data-act="start">↻ Opnieuw afspelen</button>
+    <button class="btn ghost" data-act="stop">Sluiten</button>
+  </div></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var SB_URL="https://tdriensxlmkwfzzzdjnf.supabase.co";
+var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRkcmllbnN4bG1rd2Z6enpkam5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3OTY0ODMsImV4cCI6MjEwOTM3MjQ4M30.mSb-shIwzaZcGQFyiNPjynU457MyoF9FzDvt2DiMB0U";
+var MOD_CODE="1234";
+var LS="mv_stadspel_mod";
+
+var TASKS=[
+"Vind een JIM mobile simkaart",
+"Speel een arcade game",
+"Maak een groepsfoto op een boot",
+"Maak een video: zing het MV soundlogo in een Telenet of Orange winkel met minstens 3 personen",
+"Maak een reclamespot voor fiber in Hasselt met minstens 2 onbekenden",
+"Maak een groepsfoto achter de toog van een café",
+"Zing een kerstlied in een winkel en laat het personeel meezingen",
+"Zoek iemand die een BV kent en laat die BV een live foto sturen",
+"Laat de kabouter wandelen",
+"Scoor een Hasseltse specialiteit (eten of drank)",
+"Maak een video als je tripel 20 gooit met darts",
+"Maak een foto met iemand in een opvallend kerstoutfit",
+"Zoek een standbeeld en kopieer exact de houding",
+"Zoek het borrelmanneke",
+"Gooi om ter verst een papieren vliegtuig tegen een onbekend persoon",
+"Bevind je op glad ijs"
+];
+
+var $=function(id){return document.getElementById(id)};
+var teams=[],ev=[],score={},hidden=0;
+var P={sc:[],i:0,el:0,paused:false,timer:null,opt:null,vid:null,started:false,skipped:0,ctlT:null};
+
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]})}
+function show(id){
+  var s=document.querySelectorAll(".screen");
+  for(var i=0;i<s.length;i++)s[i].classList.remove("active");
+  $(id).classList.add("active");window.scrollTo(0,0);
+}
+function api(path){
+  return fetch(SB_URL+"/rest/v1/"+path,{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}}).then(function(r){
+    return r.text().then(function(t){
+      if(!r.ok)throw new Error(t||("HTTP "+r.status));
+      return t?JSON.parse(t):[];
+    });
+  });
+}
+
+/* ---------- login + data ---------- */
+function login(){
+  if($("code").value===MOD_CODE){
+    try{localStorage.setItem(LS,"1")}catch(e){}
+    start();
+  }else{$("err").style.display="block"}
+}
+function start(){show("s-setup");loadData()}
+function loadData(){
+  Promise.all([
+    api("teams?select=name,members&order=created_at.asc"),
+    api("submissions?status=eq.approved&select=*&order=created_at.asc")
+  ]).then(function(r){
+    teams=r[0]||[];var all=r[1]||[];
+    score={};all.forEach(function(s){score[s.team_name]=(score[s.team_name]||0)+1});
+    hidden=all.filter(function(s){return s.hide_recap===true}).length;
+    ev=all.filter(function(s){return s.media_url&&s.hide_recap!==true});
+    $("loaderr").style.display="none";
+    renderSetup();
+  }).catch(function(){$("loaderr").style.display="block"});
+}
+function opts(){
+  return {photo:+$("o-photo").value*1000,video:+$("o-video").value*1000,sound:$("o-sound").checked,podium:$("o-podium").checked};
+}
+function renderSetup(){
+  var v=ev.filter(function(s){return s.media_type==="video"}).length;
+  $("n-t").textContent=teams.length;$("n-v").textContent=v;
+  $("n-p").textContent=ev.length-v;$("n-h").textContent=hidden;
+  var sc=build(opts()),tot=0;
+  sc.forEach(function(s){tot+=s.t==="video"?Math.min(s.max,12000)*0.8:s.d});
+  $("est").textContent=ev.length?"Geschatte lengte: ongeveer "+(Math.round(tot/6000)/10)+" minuten":"Er zijn nog geen goedgekeurde foto's of video's.";
+  $("start").disabled=!ev.length;
+}
+
+/* ---------- scenes ---------- */
+function ranking(){
+  var rows=teams.map(function(t){return {name:t.name,a:score[t.name]||0}});
+  rows.sort(function(x,y){return y.a-x.a||x.name.localeCompare(y.name)});
+  var rank=0,last=-1;
+  rows.forEach(function(r,i){if(r.a!==last){rank=i+1;last=r.a}r.rank=rank});
+  return rows;
+}
+function build(o){
+  var sc=[],i,k;
+  sc.push({t:"intro",d:5000});
+  for(i=0;i<TASKS.length;i++){
+    var items=ev.filter(function(s){return s.task_idx===i});
+    if(!items.length)continue;
+    var uniq={};items.forEach(function(s){uniq[s.team_name]=1});
+    sc.push({t:"task",i:i,teams:Object.keys(uniq).length,d:3500});
+    for(k=0;k<items.length;k++){
+      sc.push(items[k].media_type==="video"?{t:"video",s:items[k],max:o.video,d:o.video}:{t:"photo",s:items[k],d:o.photo});
+    }
+  }
+  var rows=ranking();
+  if(o.podium&&rows.length&&rows[0].a>0){
+    var rest=rows.filter(function(r){return r.rank>1}).reverse();
+    rest.forEach(function(r){sc.push({t:"rank",rank:r.rank,name:r.name,a:r.a,d:3000})});
+    var win=rows.filter(function(r){return r.rank===1});
+    sc.push({t:"winner",names:win.map(function(r){return r.name}),a:win[0].a,d:9000});
+  }
+  sc.push({t:"outro",d:6000});
+  return sc;
+}
+function l3(s){
+  var t=null;for(var k=0;k<teams.length;k++)if(teams[k].name===s.s.team_name)t=teams[k];
+  return '<div class="l3"><div class="tm">'+esc(s.s.team_name)+'</div><div class="tk">Opdracht '+(s.s.task_idx+1)+' · '+esc(TASKS[s.s.task_idx])+'</div></div>';
+}
+function html(s){
+  if(s.t==="intro")return '<div class="scene cs"><div class="kick">Mobile Vikings</div><div class="big pop">Het Stadspel</div><div class="sub">'+teams.length+' teams · '+ev.length+' bewijzen</div></div>';
+  if(s.t==="task")return '<div class="scene cs"><div class="kick">Opdracht '+(s.i+1)+'</div><div class="big" style="font-size:clamp(34px,7vw,104px);max-width:92%">'+esc(TASKS[s.i])+'</div><div class="sub">'+s.teams+' van '+teams.length+' teams haalden dit</div></div>';
+  if(s.t==="photo")return '<div class="scene"><img class="bgimg" src="'+esc(s.s.media_url)+'" alt=""><img class="main kb" style="--d:'+(s.d+800)+'ms" src="'+esc(s.s.media_url)+'" alt="">'+l3(s)+'</div>';
+  if(s.t==="video")return '<div class="scene"><video id="vid" class="main" playsinline preload="auto" src="'+esc(s.s.media_url)+'"></video>'+l3(s)+'</div>';
+  if(s.t==="rank")return '<div class="scene cs"><div class="kick">Plaats</div><div class="big pop" style="font-size:clamp(120px,28vw,420px);color:var(--red)">'+s.rank+'</div><div class="big" style="font-size:clamp(40px,8vw,120px)">'+esc(s.name)+'</div><div class="sub">'+s.a+' opdrachten</div></div>';
+  if(s.t==="winner")return '<div class="scene cs"><div class="kick">De winnaar</div><div class="big pop" style="font-size:clamp(60px,13vw,200px)">'+s.names.map(esc).join("<br>")+'</div><div class="sub">'+s.a+' van '+TASKS.length+' opdrachten</div></div>';
+  return '<div class="scene cs"><div class="big pop" style="font-size:clamp(56px,12vw,180px)">Thanks,<br><span class="red">vikings!</span></div><div class="sub">Tot de volgende keer.</div></div>';
+}
+function confetti(){
+  var st=$("stage"),cols=["#CD0400","#FFFFFF","#D9D9DE"];
+  for(var i=0;i<70;i++){
+    var d=document.createElement("div");d.className="cf";
+    d.style.left=Math.random()*100+"%";d.style.background=cols[i%3];
+    d.style.animationDuration=(3+Math.random()*3)+"s";d.style.animationDelay=(Math.random()*2)+"s";
+    st.appendChild(d);
+  }
+}
+
+/* ---------- player ---------- */
+function go(n){
+  if(n<0)n=0;
+  if(n>=P.sc.length){endFilm();return}
+  var old=$("vid");if(old){try{old.pause()}catch(e){}}
+  P.i=n;P.el=0;P.started=false;P.vid=null;
+  var s=P.sc[n];
+  $("stage").innerHTML=html(s);
+  if(s.t==="video"){
+    var v=$("vid");P.vid=v;v.muted=!P.opt.sound;
+    v.addEventListener("error",function(){P.skipped++;go(P.i+1)});
+    var pr=v.play();
+    if(pr&&pr.catch)pr.catch(function(){v.muted=true;var p2=v.play();if(p2&&p2.catch)p2.catch(function(){})});
+    if(P.paused)v.pause();
+  }
+  if(s.t==="winner")confetti();
+  for(var k=1;k<=2;k++){var nx=P.sc[n+k];if(nx&&nx.t==="photo"){var im=new Image();im.src=nx.s.media_url}}
+}
+function tick(){
+  if(P.paused)return;
+  P.el+=100;
+  var s=P.sc[P.i];if(!s)return;
+  var frac;
+  if(s.t==="video"){
+    var v=P.vid;
+    if(v&&v.currentTime>0.1)P.started=true;
+    if(v&&v.ended){go(P.i+1);return}
+    if(P.el>=s.max){go(P.i+1);return}
+    if(!P.started&&P.el>8000){P.skipped++;go(P.i+1);return}
+    frac=P.el/s.max;
+  }else{
+    if(P.el>=s.d){go(P.i+1);return}
+    frac=P.el/s.d;
+  }
+  $("pg").style.width=((P.i+frac)/P.sc.length*100)+"%";
+}
+function startFilm(){
+  P.opt=opts();P.sc=build(P.opt);P.paused=false;P.skipped=0;
+  $("endbox").classList.remove("on");$("pb").textContent="⏸";
+  $("pl").classList.add("on");
+  var el=$("pl"),f=el.requestFullscreen||el.webkitRequestFullscreen;
+  if(f&&!document.fullscreenElement){try{var r=f.call(el);if(r&&r.catch)r.catch(function(){})}catch(e){}}
+  clearInterval(P.timer);P.timer=setInterval(tick,100);
+  go(0);flashCtl();
+}
+function endFilm(){
+  P.paused=true;
+  var v=$("vid");if(v){try{v.pause()}catch(e){}}
+  $("pg").style.width="100%";
+  $("endmsg").textContent=P.skipped?P.skipped+" video('s) konden niet worden afgespeeld en werden overgeslagen.":"";
+  $("endbox").classList.add("on");
+}
+function stopFilm(){
+  clearInterval(P.timer);P.timer=null;
+  var v=$("vid");if(v){try{v.pause()}catch(e){}}
+  $("stage").innerHTML="";$("pl").classList.remove("on");
+  if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen();
+  loadData();
+}
+function togglePause(){
+  if($("endbox").classList.contains("on"))return;
+  P.paused=!P.paused;$("pb").textContent=P.paused?"▶":"⏸";
+  var v=P.vid;if(v){if(P.paused)v.pause();else{var p=v.play();if(p&&p.catch)p.catch(function(){})}}
+}
+function toggleFs(){
+  var el=$("pl");
+  if(document.fullscreenElement){document.exitFullscreen()}
+  else{var f=el.requestFullscreen||el.webkitRequestFullscreen;if(f)f.call(el)}
+}
+function flashCtl(){
+  $("pl").classList.add("ctl");clearTimeout(P.ctlT);
+  P.ctlT=setTimeout(function(){$("pl").classList.remove("ctl")},3000);
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click",function(e){
+  var el=e.target.closest("[data-act]");if(!el)return;
+  var a=el.getAttribute("data-act");
+  if(a==="login")login();
+  else if(a==="start")startFilm();
+  else if(a==="prev"){$("endbox").classList.remove("on");P.paused=false;$("pb").textContent="⏸";go(P.i-1)}
+  else if(a==="next")go(P.i+1);
+  else if(a==="pause")togglePause();
+  else if(a==="fs")toggleFs();
+  else if(a==="stop")stopFilm();
+});
+["o-photo","o-video","o-sound","o-podium"].forEach(function(id){$(id).addEventListener("change",renderSetup)});
+$("code").addEventListener("keydown",function(e){if(e.key==="Enter")login()});
+$("pl").addEventListener("mousemove",flashCtl);
+$("pl").addEventListener("touchstart",flashCtl);
+document.addEventListener("keydown",function(e){
+  if(!$("pl").classList.contains("on"))return;
+  flashCtl();
+  if(e.key===" "){e.preventDefault();togglePause()}
+  else if(e.key==="ArrowRight")go(P.i+1);
+  else if(e.key==="ArrowLeft")go(P.i-1);
+  else if(e.key==="f"||e.key==="F")toggleFs();
+  else if(e.key==="Escape"&&!document.fullscreenElement)stopFilm();
+});
+
+try{if(localStorage.getItem(LS)==="1")start()}catch(e){}
+})();
+</script>
+</body>
+</html>
