@@ -148,6 +148,7 @@ textarea.field{resize:none}
       <div id="sum" class="sum">Laden…</div>
     </div>
     <div class="acts">
+      <button class="chip" data-act="film">🎬 Film</button>
       <button class="chip" data-act="refresh">↻ Refresh</button>
       <button class="chip" data-act="logout">Uit</button>
     </div>
@@ -254,7 +255,7 @@ function hasBingo(team){
 function load(){
   Promise.all([
     api("teams?select=name,members&order=created_at.asc"),
-    api("submissions?select=team_name,task_idx,status,media_url,media_type,team_comment,reject_comment,created_at&order=created_at.asc")
+    api("submissions?select=*&order=created_at.asc")
   ]).then(function(r){
     teams=r[0]||[];subs=r[1]||[];map={};
     subs.forEach(function(s){map[s.team_name+"||"+s.task_idx]=s});
@@ -331,6 +332,7 @@ function openReview(team,i){
     +(s.team_comment?'<div class="ib"><div class="lbl">Opmerking team</div><div>'+esc(s.team_comment)+'</div></div>':"")
     +prev
     +'<div class="media">'+media+'</div>'
+    +(s.status==="approved"?'<button id="hb" class="btn ghost" data-act="hide" style="margin-bottom:10px">'+(s.hide_recap?"✓ Opnemen in film":"🚫 Uitsluiten van film")+'</button>':"")
     +'<div id="rj" class="rjbox"><div class="lbl">Reden voor afkeuring (zichtbaar voor het team)</div>'
     +'<textarea id="rjt" class="field" rows="2" maxlength="300" placeholder="bv. Foto is niet duidelijk genoeg…">'+esc(s.reject_comment||"")+'</textarea></div>'
     +'<div id="b1" class="btns"><button class="btn rej" data-act="rejask">✗ Afkeuren</button><button class="btn ok" data-act="approve">✓ Goedkeuren</button></div>'
@@ -352,6 +354,26 @@ function moderate(status){
     toast(status==="approved"?"Goedgekeurd voor "+team+" ✓":"Afgekeurd voor "+team,status==="approved"?"success":"error");
   }).catch(function(){toast("Opslaan mislukt. Probeer opnieuw.","error")});
 }
+
+function toggleHide(){
+  if(!rv)return;
+  var s=map[rv.team+"||"+rv.i];if(!s)return;
+  var nv=!s.hide_recap;
+  api("submissions?team_name=eq."+enc(rv.team)+"&task_idx=eq."+rv.i,{method:"PATCH",prefer:"return=minimal",body:JSON.stringify({hide_recap:nv})})
+  .then(function(){
+    s.hide_recap=nv;var b=$("hb");
+    if(b)b.textContent=nv?"✓ Opnemen in film":"🚫 Uitsluiten van film";
+    toast(nv?"Uitgesloten van de film":"Opgenomen in de film","info");
+  }).catch(function(e){
+    toast(/hide_recap/.test(String(e&&e.message))?"Voer eerst de SQL voor de film-optie uit in Supabase.":"Opslaan mislukt.","error");
+  });
+}
+document.addEventListener("click",function(e){
+  var el=e.target.closest("[data-act]");if(!el)return;
+  var a=el.getAttribute("data-act");
+  if(a==="film")location.href="recap.html";
+  else if(a==="hide")toggleHide();
+});
 
 /* ---------- events ---------- */
 document.addEventListener("click",function(e){
