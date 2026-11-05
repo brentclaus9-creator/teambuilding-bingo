@@ -25,34 +25,37 @@ textarea.field{resize:none}
 .btn{display:block;width:100%;border:0;border-radius:10px;padding:14px 0;font-weight:700;font-size:15px;text-align:center;background:var(--red);color:#fff}
 .btn:disabled{background:var(--card);color:var(--label);border:1.5px solid var(--line);cursor:default}
 .btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--muted)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.empty{color:var(--label);font-size:14px;padding:20px 0;text-align:center}
+.err{display:none;background:var(--red);color:#fff;border-radius:8px;padding:8px 12px;font-size:13px;margin:10px 0}
 
-/* register */
+/* spelers kiezen */
 .reg{padding:20px}
-.reg .hero{margin-top:44px}
+.reg .hero{margin-top:40px}
 .reg .hero .title{font-size:58px}
 .reg .hero p{font-size:14px;color:var(--muted);line-height:1.6;margin-top:14px}
-.reg .card{margin-top:28px;display:flex;flex-direction:column;gap:16px}
-.row{display:flex;gap:8px}
-.row .field{flex:1}
-.add{background:var(--red);color:#fff;border:0;border-radius:10px;padding:0 18px;font-size:20px;font-weight:700}
-.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.tag{background:#000;border:1px solid var(--line);border-radius:20px;padding:4px 6px 4px 12px;font-size:13px;display:inline-flex;align-items:center;gap:6px}
-.tag button{background:none;border:0;color:var(--label);font-size:14px;padding:0 4px}
+.tlist{display:flex;flex-direction:column;gap:10px;margin-top:26px}
+.tbtn{display:flex;align-items:center;gap:12px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;color:#fff;width:100%}
+.tbtn:active{border-color:var(--red)}
+.tbtn .tt{flex:1;min-width:0}
+.tbtn .title{font-size:25px;display:block;line-height:1.15}
+.tbtn .arr{color:var(--red);font-size:22px}
 
 /* bingo */
 .top{padding:18px 16px 14px}
 .bar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.swap{background:none;border:0;color:var(--label);font-size:12px;text-decoration:underline}
 .tcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
 .tcard .title{font-size:34px}
-.tcard .mem{font-size:12px;color:var(--label);margin:4px 0 12px}
+.tcard .mem{font-size:12.5px;color:var(--muted);margin:4px 0 12px}
 .stats{display:flex;gap:8px}
 .stat{flex:1;background:#000;border:1px solid var(--line);border-radius:10px;padding:8px 0;text-align:center}
 .stat b{display:block;font-family:var(--head);font-weight:400;font-size:28px;line-height:1}
 .stat.rank{border-color:var(--red)}.stat.rank b{color:var(--red)}
 .stat span{font-size:10px;color:var(--label);display:block;margin-top:3px}
 .bingo{display:none;margin-top:10px;background:var(--red);border-radius:8px;padding:6px 0;text-align:center;font-family:var(--head);font-size:22px;letter-spacing:1px}
+.tabs{display:flex;border-bottom:1px solid var(--line);padding:0 10px;margin-bottom:12px}
+.tab{background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;padding:11px 14px;font-size:14px;font-weight:600;color:var(--label)}
+.tab.on{color:#fff;border-bottom-color:var(--red)}
+.pane{display:none}.pane.on{display:block}
 .legend{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 10px}
 .pill{border-radius:20px;padding:2px 9px;font-size:10px}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:0 12px 20px}
@@ -64,7 +67,23 @@ textarea.field{resize:none}
 .s-rejected{background:#000;border:1.5px solid var(--red);color:#fff}
 .s-rejected .ci{color:var(--red)}
 
-/* sheet */
+/* leaderboard */
+.lbwrap{padding:4px 12px 20px}
+.lb{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.lb.me{border:2px solid var(--red)}
+.rk{font-family:var(--head);font-size:36px;width:28px;text-align:center;color:var(--label);line-height:1}
+.lb.me .rk{color:var(--red)}
+.lbi{flex:1;min-width:0}
+.lbi .title{font-size:22px}
+.lbi .mm{font-size:11px;color:var(--label);margin-top:2px}
+.bar{background:var(--line);border-radius:4px;height:4px;margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--red)}
+.sc{text-align:right}
+.sc b{display:block;font-family:var(--head);font-weight:400;font-size:32px;line-height:1}
+.sc span{font-size:10px;color:var(--label)}
+.you{font-family:var(--body);font-size:10px;text-transform:uppercase;letter-spacing:.6px;background:var(--red);border-radius:6px;padding:1px 6px;vertical-align:middle;margin-left:4px}
+
+/* sheets */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;z-index:50}
 .overlay.open{display:flex}
 .sheet{background:var(--card);border-top:1px solid var(--line);border-radius:20px 20px 0 0;padding:14px 20px calc(24px + env(safe-area-inset-bottom));width:100%;max-width:480px;margin:auto auto 0;max-height:94vh;overflow-y:auto}
@@ -87,6 +106,8 @@ textarea.field{resize:none}
 .prog i{display:block;height:100%;width:0;background:var(--red);transition:width .2s}
 .btns{display:flex;gap:8px}
 .btns .btn{flex:1}.btns .btn.big{flex:2}
+.pwm{font-size:14px;color:var(--muted);margin:-4px 0 16px;line-height:1.5}
+.note2{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px}
 
 #toasts{position:fixed;left:0;right:0;bottom:22px;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:99;pointer-events:none;padding:0 16px}
 .toast{background:#fff;color:#000;border-radius:30px;padding:11px 18px;font-weight:700;font-size:13.5px;box-shadow:0 6px 24px rgba(0,0,0,.5);max-width:100%;text-align:center}
@@ -98,39 +119,22 @@ textarea.field{resize:none}
 <div class="app">
 <div id="toasts"></div>
 
-<!-- Registratie -->
-<section id="s-register" class="screen active">
+<!-- Spelers kiezen -->
+<section id="s-pick" class="screen active">
   <div class="reg">
     <div class="logo">Mobile<i>·</i>Vikings</div>
     <div class="hero">
       <div class="title">Welkom,<br>vikings!</div>
-      <p>Werk samen, voltooi opdrachten in de stad en maak er een onvergetelijke teambuilding van. Registreer jullie team om te starten.</p>
+      <p>Zoek jullie namen, tik erop en voer het geheime woord in dat je kreeg. De eerste van jullie die binnenkomt, kiest de teamnaam voor het hele team. Daarna kan je niet meer van team wisselen.</p>
     </div>
-    <div class="card">
-      <div>
-        <div class="lbl">Teamnaam</div>
-        <input id="tn" class="field" type="text" placeholder="bv. Team Rood" autocomplete="off" maxlength="40">
-      </div>
-      <div>
-        <div class="lbl">Teamleden (optioneel)</div>
-        <div class="row">
-          <input id="mn" class="field" type="text" placeholder="Naam teamlid..." autocomplete="off" maxlength="40">
-          <button class="add" data-act="addm" aria-label="Teamlid toevoegen">+</button>
-        </div>
-        <div id="tags" class="tags"></div>
-      </div>
-      <button id="go" class="btn" data-act="register">Start de bingo →</button>
-    </div>
+    <div id="tlist" class="tlist"><div class="empty">Laden…</div></div>
   </div>
 </section>
 
 <!-- Bingo -->
 <section id="s-bingo" class="screen">
   <div class="top">
-    <div class="bar-top">
-      <div class="logo">Mobile<i>·</i>Vikings</div>
-      <button class="swap" data-act="swap">Ander team</button>
-    </div>
+    <div class="bar-top"><div class="logo">Mobile<i>·</i>Vikings</div></div>
     <div class="tcard">
       <div id="hname" class="title"></div>
       <div id="hmem" class="mem"></div>
@@ -142,14 +146,45 @@ textarea.field{resize:none}
       <div id="bingo" class="bingo">BINGO!</div>
     </div>
   </div>
-  <div class="legend">
-    <span class="pill s-pending">Niet gedaan</span>
-    <span class="pill s-submitted">In behandeling</span>
-    <span class="pill s-approved">Goedgekeurd</span>
-    <span class="pill s-rejected">Afgekeurd</span>
+  <div class="tabs">
+    <button class="tab on" data-act="tab" data-t="bingo">Bingo</button>
+    <button class="tab" data-act="tab" data-t="lb">Leaderboard</button>
   </div>
-  <div id="grid" class="grid"></div>
+  <div id="p-bingo" class="pane on">
+    <div class="legend">
+      <span class="pill s-pending">Niet gedaan</span>
+      <span class="pill s-submitted">In behandeling</span>
+      <span class="pill s-approved">Goedgekeurd</span>
+      <span class="pill s-rejected">Afgekeurd</span>
+    </div>
+    <div id="grid" class="grid"></div>
+  </div>
+  <div id="p-lb" class="pane"><div id="lb" class="lbwrap"></div></div>
 </section>
+
+<!-- Inloggen + teamnaam kiezen -->
+<div id="pw" class="overlay">
+  <div class="sheet">
+    <div class="handle"></div>
+    <div class="sh"><div id="pw-t" class="title">Even inloggen</div><button class="x" data-act="pwclose" aria-label="Sluiten">✕</button></div>
+    <div id="pw-m" class="pwm"></div>
+    <div id="pw-a">
+      <div class="lbl">Geheim woord</div>
+      <input id="pw-i" class="field" type="text" autocapitalize="none" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Het woord van jullie kaartje">
+      <div id="pw-e" class="err">Hmm, dat is niet het geheime woord van dit team. Check jullie kaartje.</div>
+      <div style="height:12px"></div>
+      <button id="pw-go" class="btn" data-act="pwgo">Verder →</button>
+    </div>
+    <div id="pw-b" style="display:none">
+      <div class="note2">Jullie zijn de eerste van het team die binnenkomt. Verzin een teamnaam waar jullie trots op zijn. Je kan hem achteraf niet meer wijzigen en je teamgenoten zien hem ook.</div>
+      <div class="lbl">Teamnaam</div>
+      <input id="nm-i" class="field" type="text" maxlength="30" autocomplete="off" placeholder="bv. De Onverschrokken Vikingen">
+      <div id="nm-e" class="err"></div>
+      <div style="height:12px"></div>
+      <button id="nm-go" class="btn" data-act="nmgo">Dit is onze naam →</button>
+    </div>
+  </div>
+</div>
 
 <!-- Upload sheet -->
 <div id="ov" class="overlay">
@@ -184,7 +219,7 @@ textarea.field{resize:none}
 "use strict";
 var SB_URL="https://tdriensxlmkwfzzzdjnf.supabase.co";
 var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRkcmllbnN4bG1rd2Z6enpkam5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3OTY0ODMsImV4cCI6MjEwOTM3MjQ4M30.mSb-shIwzaZcGQFyiNPjynU457MyoF9FzDvt2DiMB0U";
-var LS="mv_stadspel_team";
+var LS="mv_stadspel_team_v3";
 var MAX_MB=50;
 
 var TASKS=[
@@ -206,7 +241,7 @@ var TASKS=[
 {t:"Bevind je op glad ijs"}
 ];
 
-var st={team:"",members:[],subs:[],prev:null,rank:"-",total:1,sel:null,file:null,busy:false,timer:null};
+var st={teams:[],id:"",team:"",members:[],subs:[],prev:null,rank:"-",total:1,board:[],pick:null,pw:"",sel:null,file:null,busy:false,timer:null};
 var $=function(id){return document.getElementById(id)};
 var enc=encodeURIComponent;
 
@@ -254,39 +289,96 @@ function upload(path,blob,type,onProg){
 }
 
 /* ---------- sessie ---------- */
-function saveSess(){try{localStorage.setItem(LS,JSON.stringify({team:st.team,members:st.members}))}catch(e){}}
+function saveSess(){try{localStorage.setItem(LS,JSON.stringify({id:st.id,team:st.team,members:st.members}))}catch(e){}}
 function loadSess(){try{var s=localStorage.getItem(LS);return s?JSON.parse(s):null}catch(e){return null}}
 function clearSess(){try{localStorage.removeItem(LS)}catch(e){}}
+function logout(){
+  clearSess();clearInterval(st.timer);st.timer=null;
+  st.id="";st.team="";st.members=[];st.prev=null;st.subs=[];
+  show("s-pick");loadTeams();
+}
 
-/* ---------- registratie ---------- */
-function renderTags(){
-  $("tags").innerHTML=st.members.map(function(m,i){
-    return '<span class="tag">'+esc(m)+'<button data-act="rmm" data-i="'+i+'" aria-label="Verwijder">✕</button></span>';
+/* ---------- spelers kiezen ---------- */
+function loadTeams(){
+  $("tlist").innerHTML='<div class="empty">Laden…</div>';
+  api("teams?select=id,name,members,named,nr&order=nr.asc").then(function(rows){
+    st.teams=rows||[];renderPick();
+  }).catch(function(){
+    $("tlist").innerHTML='<div class="empty">Laden mislukt.<div style="height:12px"></div><button class="btn ghost" data-act="retry">Opnieuw proberen</button></div>';
+  });
+}
+function renderPick(){
+  if(!st.teams.length){$("tlist").innerHTML='<div class="empty">Er zijn nog geen teams. Vraag het aan de organisator.</div>';return}
+  $("tlist").innerHTML=st.teams.map(function(t,i){
+    return '<button class="tbtn" data-act="pick" data-i="'+i+'"><span class="tt"><span class="title">'+esc((t.members||[]).join(" · "))+'</span></span><span class="arr">→</span></button>';
   }).join("");
 }
-function addMember(){
-  var v=$("mn").value.trim();
-  if(!v||st.members.indexOf(v)>-1)return;
-  st.members.push(v);$("mn").value="";renderTags();
+function stepA(){
+  $("pw-a").style.display="block";$("pw-b").style.display="none";
+  $("pw-t").textContent="Even inloggen";
 }
-function register(){
-  var name=$("tn").value.trim();
-  if(!name)return;
-  var btn=$("go");btn.disabled=true;btn.textContent="Even geduld…";
-  api("teams?on_conflict=name",{method:"POST",prefer:"resolution=ignore-duplicates,return=minimal",body:JSON.stringify({name:name,members:st.members})})
-  .then(function(){return api("teams?name=eq."+enc(name)+"&select=name,members")})
-  .then(function(rows){
-    st.team=name;
-    if(rows&&rows[0]&&rows[0].members&&rows[0].members.length)st.members=rows[0].members;
-    saveSess();enter(true);
+function stepB(){
+  $("pw-a").style.display="none";$("pw-b").style.display="block";
+  $("pw-t").textContent="Kies jullie teamnaam";
+  $("nm-i").value="";$("nm-e").style.display="none";
+  setTimeout(function(){$("nm-i").focus()},150);
+}
+function openPw(i){
+  var t=st.teams[i];if(!t)return;
+  st.pick=i;st.pw="";
+  stepA();
+  $("pw-m").textContent=(t.members||[]).join(" · ");
+  $("pw-i").value="";$("pw-e").style.display="none";
+  $("pw").classList.add("open");
+  setTimeout(function(){$("pw-i").focus()},150);
+}
+function closePw(){$("pw").classList.remove("open");st.pw=""}
+function finish(t,name){
+  st.id=t.id;st.team=name;st.members=t.members||[];st.pw="";
+  saveSess();closePw();enter(true);
+}
+function tryLogin(){
+  var t=st.teams[st.pick],pw=$("pw-i").value.trim();
+  if(!t||!pw)return;
+  var b=$("pw-go");b.disabled=true;b.textContent="Even controleren…";
+  api("rpc/login_team",{method:"POST",body:JSON.stringify({p_id:t.id,p_pw:pw})})
+  .then(function(r){
+    if(!r||r.ok!==true){$("pw-e").style.display="block";return}
+    if(r.named){finish(t,r.name)}
+    else{st.pw=pw;stepB()}
   })
-  .catch(function(){toast("Registreren mislukt. Controleer je internet en probeer opnieuw.","error")})
-  .then(function(){btn.disabled=false;btn.textContent="Start de bingo →"});
+  .catch(function(){toast("Controleren mislukt. Probeer opnieuw.","error")})
+  .then(function(){b.disabled=false;b.textContent="Verder →"});
+}
+function nmErr(m){$("nm-e").textContent=m;$("nm-e").style.display="block"}
+function trySetName(){
+  var t=st.teams[st.pick],nm=$("nm-i").value.trim().replace(/\s+/g," ");
+  if(!t)return;
+  if(nm.length<2||nm.length>30){nmErr("Kies een naam van 2 tot 30 tekens.");return}
+  var b=$("nm-go");b.disabled=true;b.textContent="Even opslaan…";
+  api("rpc/name_team",{method:"POST",body:JSON.stringify({p_id:t.id,p_pw:st.pw,p_new:nm})})
+  .then(function(r){
+    if(r&&r.ok===true){
+      if(r.already)toast("Een teamgenoot was je voor. Jullie team heet "+r.name+".","info");
+      finish(t,r.name);
+    }
+    else if(r&&r.reason==="taken")nmErr("Die naam is al in gebruik. Verzin een andere.");
+    else if(r&&r.reason==="len")nmErr("Kies een naam van 2 tot 30 tekens.");
+    else nmErr("Dat lukte niet. Probeer opnieuw.");
+  })
+  .catch(function(){nmErr("Dat lukte niet. Controleer je internet en probeer opnieuw.")})
+  .then(function(){b.disabled=false;b.textContent="Dit is onze naam →"});
 }
 function enter(first){
-  show("s-bingo");render();load();
+  show("s-bingo");setTab("bingo");render();load();
   if(!st.timer)st.timer=setInterval(load,5000);
-  if(first)toast("Welkom, team "+st.team+"!");
+  if(first)toast("Welkom, "+st.team+"!");
+}
+function setTab(t){
+  var tabs=document.querySelectorAll(".tab"),panes=document.querySelectorAll(".pane"),i;
+  for(i=0;i<tabs.length;i++)tabs[i].classList.toggle("on",tabs[i].getAttribute("data-t")===t);
+  for(i=0;i<panes.length;i++)panes[i].classList.remove("on");
+  $("p-"+t).classList.add("on");
 }
 
 /* ---------- data ---------- */
@@ -309,26 +401,35 @@ function hasBingo(){
 }
 function load(){
   if(!st.team)return;
-  Promise.all([
-    api("submissions?team_name=eq."+enc(st.team)+"&select=task_idx,status,reject_comment"),
-    api("submissions?status=eq.approved&select=team_name"),
-    api("teams?select=name")
-  ]).then(function(r){
-    var mine=r[0]||[];
-    var now={};mine.forEach(function(s){now[s.task_idx]=s.status});
-    if(st.prev){
-      Object.keys(now).forEach(function(k){
-        if(st.prev[k]==="submitted"&&now[k]==="approved")toast("Opdracht goedgekeurd! 🎉");
-        if(st.prev[k]==="submitted"&&now[k]==="rejected")toast("Een opdracht is afgekeurd. Bekijk de feedback.","error");
-      });
+  api("teams?select=id,name,members,nr&order=nr.asc").then(function(tl){
+    tl=tl||[];
+    if(tl.length){
+      var found=false;
+      tl.forEach(function(t){if(t.id===st.id){found=true;st.team=t.name;st.members=t.members||st.members}});
+      if(!found){logout();return}
     }
-    st.prev=now;st.subs=mine;
-    var sc={};(r[2]||[]).forEach(function(t){sc[t.name]=0});
-    (r[1]||[]).forEach(function(x){sc[x.team_name]=(sc[x.team_name]||0)+1});
-    var me=sc[st.team]||0,rank=1;
-    Object.keys(sc).forEach(function(k){if(k!==st.team&&sc[k]>me)rank++});
-    st.rank=rank;st.total=Object.keys(sc).length||1;
-    render();
+    return Promise.all([
+      api("submissions?team_name=eq."+enc(st.team)+"&select=task_idx,status,reject_comment"),
+      api("submissions?status=eq.approved&select=team_name")
+    ]).then(function(r){
+      var mine=r[0]||[];
+      var now={};mine.forEach(function(s){now[s.task_idx]=s.status});
+      if(st.prev){
+        Object.keys(now).forEach(function(k){
+          if(st.prev[k]==="submitted"&&now[k]==="approved")toast("Opdracht goedgekeurd! 🎉");
+          if(st.prev[k]==="submitted"&&now[k]==="rejected")toast("Een opdracht is afgekeurd. Bekijk de feedback.","error");
+        });
+      }
+      st.prev=now;st.subs=mine;
+      var sc={};(r[1]||[]).forEach(function(x){sc[x.team_name]=(sc[x.team_name]||0)+1});
+      var rows=tl.map(function(t){return {id:t.id,name:t.name,members:t.members||[],a:sc[t.name]||0}});
+      rows.sort(function(x,y){return y.a-x.a||x.name.localeCompare(y.name)});
+      var rank=0,last=-1;
+      rows.forEach(function(row,i){if(row.a!==last){rank=i+1;last=row.a}row.rank=rank});
+      st.board=rows;st.total=rows.length||1;
+      st.rank="-";rows.forEach(function(row){if(row.id===st.id)st.rank=row.rank});
+      render();
+    });
   }).catch(function(){});
 }
 
@@ -348,6 +449,14 @@ function render(){
     return '<button class="cell s-'+s+'" data-act="open" data-i="'+i+'"'+(s==="approved"?" disabled":"")+'>'
       +(icons[s]?'<span class="ci">'+icons[s]+'</span>':"")+'<span>'+esc(t.t)+'</span></button>';
   }).join("");
+  $("lb").innerHTML=st.board.map(function(r){
+    var me=r.id===st.id;
+    return '<div class="lb'+(me?" me":"")+'"><div class="rk">'+r.rank+'</div><div class="lbi">'
+      +'<div class="title">'+esc(r.name)+(me?'<span class="you">jullie</span>':"")+'</div>'
+      +'<div class="mm">'+esc(r.members.join(" · "))+'</div>'
+      +'<div class="bar"><i style="width:'+Math.round(r.a/16*100)+'%"></i></div></div>'
+      +'<div class="sc"><b>'+r.a+'</b><span>/ 16</span></div></div>';
+  }).join("");
 }
 
 /* ---------- upload sheet ---------- */
@@ -365,7 +474,7 @@ function openSheet(i){
   var n=$("note"),s=statusOf(i),rc=rejectOf(i),h="";
   if(s==="rejected"){h='<b>Feedback moderator</b>'+(rc?esc(rc):"Deze opdracht werd afgekeurd. Probeer opnieuw.");n.className="note bad"}
   else if(s==="submitted"){h="Je bewijs wacht op goedkeuring. Een nieuw bewijs vervangt het vorige.";n.className="note"}
-  else if(TASKS[i].v){h="Tip: film dit als korte video (max. 30 seconden).";n.className="note"}
+  else if(TASKS[i].v){h="Tip: film dit als korte video (max. 20 seconden).";n.className="note"}
   n.innerHTML=h;n.style.display=h?"block":"none";
   $("ov").classList.add("open");
 }
@@ -426,27 +535,26 @@ function send(){
 document.addEventListener("click",function(e){
   var el=e.target.closest("[data-act]");if(!el)return;
   var a=el.getAttribute("data-act");
-  if(a==="addm")addMember();
-  else if(a==="rmm"){st.members.splice(+el.getAttribute("data-i"),1);renderTags()}
-  else if(a==="register")register();
+  if(a==="pick")openPw(+el.getAttribute("data-i"));
+  else if(a==="pwclose")closePw();
+  else if(a==="pwgo")tryLogin();
+  else if(a==="nmgo")trySetName();
+  else if(a==="retry")loadTeams();
+  else if(a==="tab")setTab(el.getAttribute("data-t"));
   else if(a==="open")openSheet(+el.getAttribute("data-i"));
   else if(a==="close")closeSheet();
   else if(a==="again")clearFile();
   else if(a==="send")send();
-  else if(a==="swap"){
-    if(confirm("Van team wisselen? Je komt terug op het startscherm.")){
-      clearSess();clearInterval(st.timer);st.timer=null;st.team="";st.members=[];st.prev=null;st.subs=[];
-      $("tn").value="";renderTags();show("s-register");
-    }
-  }
 });
+$("pw").addEventListener("click",function(e){if(e.target===this)closePw()});
 $("ov").addEventListener("click",function(e){if(e.target===this)closeSheet()});
 $("file").addEventListener("change",onFile);
-$("mn").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();addMember()}});
-$("tn").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();register()}});
+$("pw-i").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();tryLogin()}});
+$("nm-i").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();trySetName()}});
 
 var s=loadSess();
-if(s&&s.team){st.team=s.team;st.members=s.members||[];enter(false)}
+if(s&&s.team&&s.id){st.id=s.id;st.team=s.team;st.members=s.members||[];enter(false)}
+else loadTeams();
 })();
 </script>
 </body>
