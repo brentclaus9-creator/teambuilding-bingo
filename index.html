@@ -401,11 +401,11 @@ function hasBingo(){
 }
 function load(){
   if(!st.team)return;
-  api("teams?select=id,name,members,nr&order=nr.asc").then(function(tl){
+  api("teams?select=id,name,members,nr,named&order=nr.asc").then(function(tl){
     tl=tl||[];
     if(tl.length){
       var found=false;
-      tl.forEach(function(t){if(t.id===st.id){found=true;st.team=t.name;st.members=t.members||st.members}});
+      tl.forEach(function(t){if(t.id===st.id&&t.named){found=true;st.team=t.name;st.members=t.members||st.members}});
       if(!found){logout();return}
     }
     return Promise.all([
